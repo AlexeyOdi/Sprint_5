@@ -3,76 +3,60 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import time
+import locators
+import pytest
+from conftest import *
 
-## test_login_main_page
+@pytest.mark.usefixtures("get_driver")
+class TestClass:
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+    def test_login_main_page(self):
 
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/section[2]/div/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input').send_keys("Alex@mail.com")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input').send_keys("Alexalex")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
-element = driver.find_element(By.XPATH, '//div/main/div/div/div/ul/li[2]/div/div/input')
-assert element.get_attribute("value") == "alex@mail.com"
+        self.driver.get(locators.url)
+        self.driver.find_element(By.XPATH, locators.login_button_on_main).click()
+        self.driver.find_element(By.XPATH, locators.email_input_login).send_keys("Alex@mail.com")
+        self.driver.find_element(By.XPATH, locators.password_input_login).send_keys("Alexalex")
+        self.driver.find_element(By.XPATH, locators.login_button_on_login_page).click()
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
+        assert self.driver.current_url == locators.account_page
 
-driver.quit()
+    def test_login_personal_cab(self):
 
-## test_login_personal_cab
+        self.driver.get(locators.url)
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        self.driver.find_element(By.XPATH, locators.email_input_login).send_keys("Alex@mail.com")
+        self.driver.find_element(By.XPATH, locators.password_input_login).send_keys("Alexalex")
+        self.driver.find_element(By.XPATH, locators.login_button_on_login_page).click()
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
+        assert self.driver.current_url == locators.account_page
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+    def test_login_from_reg_form(self):
 
-driver.find_element(By.XPATH, '//*/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "Auth_link__1fOlj")))
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input').send_keys("Alex@mail.com")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input').send_keys("Alexalex")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
-element = driver.find_element(By.XPATH, '//div/main/div/div/div/ul/li[2]/div/div/input')
-assert element.get_attribute("value") == "alex@mail.com"
+        self.driver.get(locators.url)
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        self.driver.find_element(By.XPATH, locators.registration_page).click()
+        self.driver.find_element(By.XPATH, locators.login_button_on_reg_page).click()
+        self.driver.find_element(By.XPATH, locators.email_input_login).send_keys("Alex@mail.com")
+        self.driver.find_element(By.XPATH, locators.password_input_login).send_keys("Alexalex")
+        self.driver.find_element(By.XPATH, locators.login_button_on_login_page).click()
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        WebDriverWait(self.driver, 3).until(
+            expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
+        assert self.driver.current_url == locators.account_page
 
-driver.quit()
+    def test_login_from_recover_password_form(self):
 
-## test_login_from_reg_form
-
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
-
-driver.find_element(By.XPATH, '//*/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "Auth_link__1fOlj")))
-
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/div/p[1]/a').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/div/p/a').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input').send_keys("Alex@mail.com")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input').send_keys("Alexalex")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
-element = driver.find_element(By.XPATH, '//div/main/div/div/div/ul/li[2]/div/div/input')
-assert element.get_attribute("value") == "alex@mail.com"
-
-time.sleep(2)
-driver.quit()
-
-## test_login_from_recover_password_form
-
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
-
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/section[2]/div/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/div/p[2]/a').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/div/p/a').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input').send_keys("Alex@mail.com")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input').send_keys("Alexalex")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
-element = driver.find_element(By.XPATH, '//div/main/div/div/div/ul/li[2]/div/div/input')
-assert element.get_attribute("value") == "alex@mail.com"
-
-driver.quit()
+        self.driver.get(locators.url)
+        self.driver.find_element(By.XPATH, locators.login_button_on_main).click()
+        self.driver.find_element(By.XPATH, locators.password_recover_button).click()
+        self.driver.find_element(By.XPATH, locators.login_button_on_reg_page).click()
+        self.driver.find_element(By.XPATH, locators.email_input_login).send_keys("Alex@mail.com")
+        self.driver.find_element(By.XPATH, locators.password_input_login).send_keys("Alexalex")
+        self.driver.find_element(By.XPATH, locators.login_button_on_login_page).click()
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        WebDriverWait(self.driver, 3).until(
+            expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
+        assert self.driver.current_url == locators.account_page
 

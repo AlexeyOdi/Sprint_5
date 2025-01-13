@@ -3,17 +3,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import time
+import locators
+import pytest
+from conftest import *
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+@pytest.mark.usefixtures("get_driver")
+class TestClass:
 
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/section[2]/div/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[1]/div/div/input').send_keys("Alex@mail.com")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/fieldset[2]/div/div/input').send_keys("Alexalex")
-driver.find_element(By.XPATH, '//*[@id="root"]/div/main/div/form/button').click()
-driver.find_element(By.XPATH, '//*[@id="root"]/div/header/nav/a').click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/account/profile"
+    def test_personal_cab_transfer(self):
 
-
-driver.quit()
+        self.driver.get(locators.url)
+        self.driver.find_element(By.XPATH, locators.login_button_on_main).click()
+        self.driver.find_element(By.XPATH, locators.email_input_login).send_keys("Alex@mail.com")
+        self.driver.find_element(By.XPATH, locators.password_input_login).send_keys("Alexalex")
+        self.driver.find_element(By.XPATH, locators.login_button_on_login_page).click()
+        self.driver.find_element(By.XPATH, locators.personal_account).click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//div/main/div/div")))
+        assert self.driver.current_url == locators.account_page
